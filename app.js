@@ -109,11 +109,14 @@ app.post("/submit", function (req, res) {
 });
 
 app.get("/secrets", function (req, res) {
-    if (req.isAuthenticated) {
-        res.render('secrets');
-    } else {
-        res.redirect("/login");
-    }
+    User.find({secret:{$ne:null}}).then(function (foundUsers){
+        if (foundUsers) {
+            res.render("secrets", {usersWithSecrets: foundUsers});
+        }
+        else{
+            res.redirect("/submit");
+        }
+    });
 });
 
 app.get('/auth/facebook',
